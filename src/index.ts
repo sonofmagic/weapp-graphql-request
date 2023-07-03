@@ -10,6 +10,7 @@ import {
 import { resolveRequestDocument } from './resolveRequestDocument.js'
 import type {
   BatchRequestDocument,
+  Fetch,
   FetchOptions,
   GraphQLClientRequestHeaders,
   GraphQLClientResponse,
@@ -33,7 +34,6 @@ import {
   Variables,
 } from './types.js'
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
-import crossFetch, * as CrossFetch from 'cross-fetch'
 
 /**
  * Convert the given headers configuration into a plain object.
@@ -41,10 +41,7 @@ import crossFetch, * as CrossFetch from 'cross-fetch'
 const resolveHeaders = (headers?: GraphQLClientRequestHeaders): Record<string, string> => {
   let oHeaders: Record<string, string> = {}
   if (headers) {
-    if (
-      (typeof Headers !== `undefined` && headers instanceof Headers) ||
-      (CrossFetch && CrossFetch.Headers && headers instanceof CrossFetch.Headers)
-    ) {
+    if (typeof Headers !== `undefined` && headers instanceof Headers) {
       oHeaders = HeadersInstanceToPlainObject(headers)
     } else if (Array.isArray(headers)) {
       headers.forEach(([name, value]) => {
@@ -120,7 +117,7 @@ const buildRequestConfig = <V extends Variables>(params: BuildRequestConfigParam
   return `query=${encodeURIComponent(params_.jsonSerializer.stringify(payload))}`
 }
 
-type Fetch = (url: string, config: RequestInit) => Promise<Response>
+// type Fetch = (url: string, config: RequestInit) => Promise<Response>
 
 interface RequestVerbParams<V extends Variables = Variables> {
   url: string
@@ -196,7 +193,7 @@ class GraphQLClient {
 
     const {
       headers,
-      fetch = crossFetch,
+      fetch,
       method = `POST`,
       requestMiddleware,
       responseMiddleware,
@@ -218,7 +215,7 @@ class GraphQLClient {
         ...resolveHeaders(rawRequestOptions.requestHeaders),
       },
       operationName,
-      fetch,
+      fetch: <Fetch>fetch,
       method,
       fetchOptions,
       middleware: requestMiddleware,
@@ -254,7 +251,7 @@ class GraphQLClient {
 
     const {
       headers,
-      fetch = crossFetch,
+      fetch,
       method = `POST`,
       requestMiddleware,
       responseMiddleware,
@@ -276,7 +273,7 @@ class GraphQLClient {
         ...resolveHeaders(requestOptions.requestHeaders),
       },
       operationName,
-      fetch,
+      fetch: <Fetch>fetch,
       method,
       fetchOptions,
       middleware: requestMiddleware,
@@ -326,7 +323,7 @@ class GraphQLClient {
         ...resolveHeaders(batchRequestOptions.requestHeaders),
       },
       operationName: undefined,
-      fetch: this.requestConfig.fetch ?? crossFetch,
+      fetch: this.requestConfig.fetch!,
       method: this.requestConfig.method || `POST`,
       fetchOptions,
       middleware: this.requestConfig.requestMiddleware,
@@ -449,9 +446,9 @@ interface RawRequest {
 }
 
 // prettier-ignore
-type RawRequestArgs<V extends Variables> = 
+type RawRequestArgs<V extends Variables> =
   | [options: RawRequestExtendedOptions<V>, query?: string, ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>]
-  | [url: string,                           query?: string, ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>]
+  | [url: string, query?: string, ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>]
 
 /**
  * Send a GraphQL Query to the GraphQL server for execution.

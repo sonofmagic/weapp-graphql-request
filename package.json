@@ -1,6 +1,7 @@
 {
-  "name": "graphql-request",
-  "version": "0.0.0-dripip",
+  "name": "weapp-graphql-request",
+  "description": "This is a util fork form graphql-request and only worked in weapp environment",
+  "version": "0.2.0",
   "type": "module",
   "main": "./build/cjs/index.js",
   "exports": {
@@ -18,32 +19,32 @@
   "types": "./build/esm/index.d.ts",
   "packageManager": "pnpm@8.6.2",
   "files": [
-    "build",
-    "src"
+    "build"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/jasonkuhrt/graphql-request.git"
+    "url": "https://github.com/sonofmagic/weapp-graphql-request.git"
   },
   "keywords": [
+    "weapp",
     "graphql",
     "request",
     "fetch",
     "graphql-client"
   ],
   "author": {
-    "name": "Jason Kuhrt",
-    "email": "jasonkuhrt@me.com",
-    "url": "https://kuhrt.me"
+    "name": "SonOfMagic",
+    "email": "qq1324318532@gmail.com",
+    "url": "https://icebreaker.top"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jasonkuhrt/graphql-request/issues"
+    "url": "https://github.com/sonofmagic/weapp-graphql-request/issues"
   },
-  "homepage": "https://github.com/jasonkuhrt/graphql-request",
+  "homepage": "https://github.com/sonofmagic/weapp-graphql-request",
   "scripts": {
-    "dev": "rm -rf dist && tsc --watch",
-    "format": "pnpm build:docs && prettier --write .",
+    "dev": "rimraf dist && tsc --watch",
+    "format": "prettier --write .",
     "lint": "eslint . --ext .ts,.tsx --fix",
     "check": "pnpm check:types && pnpm check:format && pnpm check:lint",
     "check:types": "pnpm tsc --noEmit",
@@ -52,39 +53,42 @@
     "prepublishOnly": "pnpm build",
     "build:docs": "doctoc README.md --notitle && prettier --write README.md",
     "build": "pnpm clean && pnpm build:cjs && pnpm build:esm",
-    "build:cjs": "pnpm tsc --project tsconfig.cjs.json && echo '{\"type\":\"commonjs\"}' > build/cjs/package.json",
+    "build:cjs": "pnpm tsc --project tsconfig.cjs.json && echo {\"type\":\"commonjs\"} > build/cjs/package.json",
     "build:esm": "pnpm tsc --project tsconfig.esm.json",
-    "clean": "tsc --build --clean && rm -rf build",
+    "clean": "tsc --build --clean && rimraf build",
     "test": "vitest",
     "test:coverage": "pnpm test -- --coverage",
     "release:stable": "dripip stable",
     "release:preview": "dripip preview",
-    "release:pr": "dripip pr"
+    "release:pr": "dripip pr",
+    "sync": "cnpm sync weapp-graphql-request"
   },
   "dependencies": {
-    "@graphql-typed-document-node/core": "^3.2.0",
-    "cross-fetch": "^3.1.5"
+    "@graphql-typed-document-node/core": "^3.2.0"
   },
   "peerDependencies": {
     "graphql": "14 - 16"
   },
   "devDependencies": {
-    "@graphql-tools/schema": "^9.0.18",
+    "@dcloudio/types": "^3.3.3",
+    "@graphql-tools/schema": "^10.0.0",
     "@prisma-labs/prettier-config": "^0.1.0",
-    "@tsconfig/node16": "^1.0.3",
+    "@tsconfig/node16": "^16.1.0",
     "@types/body-parser": "^1.19.2",
     "@types/express": "^4.17.17",
+    "@types/extract-files": "^8.1.1",
     "@types/json-bigint": "^1.0.1",
-    "@types/node": "^20.0.0",
-    "@types/ws": "^8.5.4",
-    "@typescript-eslint/eslint-plugin": "^5.58.0",
-    "@typescript-eslint/parser": "^5.58.0",
-    "@vitest/coverage-c8": "^0.32.0",
+    "@types/node": "^20.3.3",
+    "@types/ws": "^8.5.5",
+    "@typescript-eslint/eslint-plugin": "^5.60.1",
+    "@typescript-eslint/parser": "^5.60.1",
+    "@vitest/coverage-c8": "^0.32.2",
     "apollo-server-express": "^3.12.0",
     "body-parser": "^1.20.2",
+    "cross-fetch": "^3.1.8",
     "doctoc": "^2.2.1",
     "dripip": "^0.10.0",
-    "eslint": "^8.38.0",
+    "eslint": "^8.44.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-config-prisma": "^0.1.0",
     "eslint-plugin-deprecation": "^1.4.1",
@@ -95,16 +99,21 @@
     "express": "^4.18.2",
     "fetch-cookie": "^2.1.0",
     "get-port": "^7.0.0",
-    "graphql": "^16.6.0",
-    "graphql-tag": "^2.12.6",
-    "graphql-ws": "^5.12.1",
-    "happy-dom": "^9.7.1",
-    "json-bigint": "^1.0.0",
+    "graphql": "^16.7.1",
+    "graphql-tag": "^2.12.5",
+    "graphql-ws": "^5.14.0",
+    "happy-dom": "^9.20.3",
+    "miniprogram-api-typings": "^3.10.0",
     "prettier": "^2.8.7",
-    "type-fest": "^3.8.0",
-    "typescript": "^5.0.4",
-    "vitest": "^0.32.0",
+    "rimraf": "^5.0.1",
+    "type-fest": "^3.12.0",
+    "typescript": "^5.1.6",
+    "vitest": "^0.32.2",
     "ws": "^8.13.0"
   },
-  "prettier": "@prisma-labs/prettier-config"
+  "prettier": "@prisma-labs/prettier-config",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  }
 }
